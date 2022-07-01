@@ -2,7 +2,9 @@ const app= require('../app')
 const debug= require('debug')('server:server')
 const http = require('http')
 const config = require('../config/config')
-
+const {dbConnect} = require('../config/mongo')
+//Connect to mongoDB
+dbConnect()
 //Get port from enviorment and store in express.
 
 const port = normalizePort(config.dev.PORT)

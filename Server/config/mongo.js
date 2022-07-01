@@ -1,14 +1,18 @@
 const mongoose = require('mongoose')
 
 const dbConnect = () => {
-  try{
     const DB_URI= process.env.DB_URI
-    console.log(DB_URI)
-    const db = mongoose.connect(DB_URI)
-    console.log("CONECTION TO MONGODB SUCCESFULL")
-  }catch (error){
-    console.error(error)
-  } 
+    const db = mongoose.connect(DB_URI,{
+      useNewUrlParser:true,
+      useUnifiedTopology:true
+    }, (err, res) => {
+      if(!err){
+        console.log('CONECTION TO MONGODB SUCCESFULL')
+      }else{
+        console.log('CONECTION TO MONGODB ERROR')
+      }
+    })
   }
 
-module.exports={dbConnect}
+
+module.exports = { dbConnect }

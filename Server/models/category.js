@@ -1,25 +1,33 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-const thing = require('./thing');
-module.exports = (sequelize, DataTypes) => {
-  class category extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      category.belongsToMany(thing, {through: 'thingCategories'})
+const {Schema, model, default: mongoose} = require('mongoose')
+
+const categorySchema= new Schema({
+  name:{
+    type: String
+  },
+  finishied: {
+    type: Boolean,
+    default:false,
+    dateFinish:{
+      type: Date
     }
-  }
-  category.init({
-    id: DataTypes.INTEGER,
-    name: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'category',
-  });
-  return category;
-};
+  },
+  games:[{
+    type: mongoose.Schema.Types,
+    ref: 'Game' 
+  }],
+  books:[{
+    type: mongoose.Schema.Types,
+    ref: 'Book' 
+  }],
+  movies:[{
+    type: mongoose.Schema.Types,
+    ref: 'Movie' //referencia a things
+  }],
+  categories:[{
+    type: mongoose.Schema.Types,
+    ref: 'Category'
+  }],
+},{
+  timestamps:true,
+  versionKey:false
+})
