@@ -6,14 +6,14 @@ const userSchema= new mongoose.Schema({
     type: String,
     require: true,
     validate: [isEmail, 'invalid email'],
-    createIndexes: {unique: true},
+    index: {unique: true},
     trim:true
   },
   nickName: 
   {
     type: String,
     require:true,
-    createIndexes: {unique:true},
+    index: {unique:true},
     trim:true
   },
   password: {
@@ -25,15 +25,15 @@ const userSchema= new mongoose.Schema({
     type: Date
   },
   games:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Game' 
   }],
   books:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Book' 
   }],
   movies:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Movie' //referencia a things
   }],
 },{
