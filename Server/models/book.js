@@ -1,6 +1,6 @@
-const {Schema, model} = require('mongoose')
+const mongoose = require('mongoose')
 
-const bookSchema = new Schema({
+const bookSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
@@ -8,10 +8,7 @@ const bookSchema = new Schema({
     trim:true
   },
   calification: {
-    type: Integer
-  },
-  plataformLink: {
-    type: String
+    type: Number
   },
   autor: {
     type:String,
@@ -19,21 +16,14 @@ const bookSchema = new Schema({
     trim:true
   },
   pages: {
-    type: Integer
-  },
-  finishied: {
-    type: Boolean,
-    default:false,
-    dateFinish:{
-      type: Date
-    }
+    type: Number
   },
   users:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
   categories:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   }],
 },{
@@ -41,4 +31,4 @@ const bookSchema = new Schema({
   versionKey:false
 })
 
-export default model('Book',bookSchema)
+module.exports = mongoose.model('book',bookSchema)

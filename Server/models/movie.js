@@ -21,23 +21,16 @@ const movieSchema = new mongoose.Schema({
   duration: {
     type: Number
   },
-  finishied: {
-    type: Boolean,
-    default:false,
-    dateFinish:{
-      type: Date
-    }
-  },
   users:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
   categories:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   }],
 },{
   timestamps:true,
   versionKey:false
 })
-module.exports = mongoose.model('movie',userSchema)
+module.exports = mongoose.model('movie',movieSchema)

@@ -1,33 +1,28 @@
-const {Schema, model, default: mongoose} = require('mongoose')
+const mongoose = require('mongoose')
 
-const categorySchema= new Schema({
+const categorySchema= new mongoose.Schema({
   name:{
     type: String
   },
-  finishied: {
-    type: Boolean,
-    default:false,
-    dateFinish:{
-      type: Date
-    }
-  },
   games:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Game' 
   }],
   books:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Book' 
   }],
   movies:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Movie' //referencia a things
   }],
   categories:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   }],
 },{
   timestamps:true,
   versionKey:false
 })
+
+module.exports = mongoose.model('category',categorySchema)

@@ -41,4 +41,15 @@ const validateNotExist = async (req,res,next) => {
     res.status(409).json("Email or NickName already exist in data base")
   }
 }
-module.exports = {validateRegister, validateExist, validateNotExist}
+
+const validateExistId = async (req,res,next) => {
+  const {id}= req.params
+  const user = await usersModel.find({"nickName": id})
+  if(user.length){
+    next()
+  }else{
+    console.log(`User not exist`)
+    res.status(409).json("User not exist in data base")
+  }
+}
+module.exports = {validateRegister, validateExist, validateNotExist, validateExistId}

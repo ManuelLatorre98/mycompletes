@@ -1,6 +1,6 @@
-const {Schema, model} = require('mongoose')
+const mongoose = require('mongoose')
 
-const gameSchema = new Schema({
+const gameSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
@@ -18,24 +18,16 @@ const gameSchema = new Schema({
     require:true,
     trim:true
   },
-  finishied: {
-    type: Boolean,
-    default:false,
-    dateFinish:{
-      type: Date
-    }
-  },
   users:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
   categories:[{
-    type: mongoose.Schema.Types,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   }],
 },{
   timestamps:true,
   versionKey:false
 })
-
-export default model('Game',gameSchema)
+module.exports = mongoose.model('game',gameSchema)

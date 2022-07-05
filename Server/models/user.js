@@ -26,15 +26,27 @@ const userSchema= new mongoose.Schema({
   },
   games:[{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Game' 
+    ref: 'Game', 
+    dateFinish:{
+      type: Date
+    }
   }],
   books:[{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Book' 
+    ref: 'Book', 
+    dateFinish:{
+      type: Date
+    }
   }],
   movies:[{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Movie' //referencia a things
+    ref: 'Movie', 
+    dateFinish:{
+      type: Date
+    },
+    calification:{
+      type: Number
+    }
   }],
 },{
     timestamps:true,

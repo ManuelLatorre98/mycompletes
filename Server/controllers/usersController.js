@@ -1,53 +1,34 @@
-const { trusted } = require("mongoose")
-const {hashPassword, comparePassword} = require('../auth/hashPassword')
-const {createUser} = require('../services/usersService')
-const usersModel= require('../models/user')
-
-const {generateToken, clearData} = require('../helpers/authHelper')
+const {fetchAllUsers, fetchUserById} = require('../services/userService')
+const {userClearData, userClearDataList} = require('../helpers/dataHelper')
 module.exports = {
-  async register(req,res){
+  async getAllUsers(req, res, next){
     try{
-      const {email, nickName, password, dateBorn} =req.body
-      const encryptedPassword = await hashPassword(password)
-      const newData= {email,nickName,password:encryptedPassword,dateBorn}
-      const newUser= await createUser(newData)
-      const token= generateToken(newUser)
-      const dataUser = clearData(newUser, token)
-      res.send(dataUser)
+      const usersList = await fetchAllUsers()
+      const userListClear = userClearDataList(usersList)
+      res.status(200).json(userListClear)
     }catch(err){
-      console.log(`Register Error: ${err.message}`)
-      res.status(500).json({ok:false, error: err.message})
+      next(err)
+    } 
+  },
+
+  async getUserById(req, res, next){
+    try{
+      const {id} = req.params
+      const user = await fetchUserById(id)
+      const userClear = userClearData(user)
+      res.status(200).json(userClear)
+    }catch(err){
+      next(err)
     }
   },
 
-  async login(req,res){
-    const {userLogin, password} = req.body
-    const user = await usersModel.find({$or: [{"email" : userLogin}, {"nickName": userLogin}]})
-    const passwordMatch = await comparePassword(password, user[0].password)
-    if(passwordMatch){
-      token= generateToken(user[0])
-      const dataUser= clearData(user[0], token)
-      res.status(200).json(dataUser)
-    }else{
-      res.status(401).json({token: null, message: 'Invalid password'})
+  async getCollection(req, res, next){
+    try{
+      const {id, collection} = req.params
+      //Obtengo la coleccion desde id usuario/ ME fui a hacer los metodos de las colecciones
+      console.log(collection)
+    }catch(err){
+      next(err)
     }
   }
 }
-
-/* function generateToken(user){
-  const token = jwt.sign({id: user._id}, config.tokenSecret.SECRET,{
-    expiresIn: config.dev.TOKEN_LIFE //24 hours
-  })
-  return token
-}
-
-function clearData(user, token){
-  console.log(user)
-  const dataUser = {
-    email: user.email,
-    nickName: user.nickName,
-    dateBorn: user.dateBorn,
-    token: token
-  }
-  return dataUser
-} */
