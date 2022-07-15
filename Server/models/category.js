@@ -15,11 +15,7 @@ const categorySchema= new mongoose.Schema({
   movies:[{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Movie' //referencia a things
-  }],
-  categories:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
-  }],
+  }]
 },{
   timestamps:true,
   versionKey:false

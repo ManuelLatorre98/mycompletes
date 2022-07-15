@@ -1,7 +1,6 @@
 const {check} = require('express-validator')
 const bookModel = require('../../models/book')
 const { validateResult } = require('../../helpers/validateHelper')
-const book = require('../../models/book')
 const mongoose = require('mongoose')
 const {normalizeString} = require('../../helpers/stringFormatHelper')
 const validateBookData = [
@@ -21,16 +20,12 @@ const validateBookData = [
     .exists()
     .not()
     .isEmpty(),
-  check('finishied')
-    .exists()
-    .not()
-    .isEmpty(),
   (req,res,next) => {
     validateResult(req,res,next)
   }
 ]
 
-const validateNotExist = async (req,res,next) => { //Check form name
+/* const validateNotExist = async (req,res,next) => { //Check form name
   const {name} = req.body
   let book=[]
   
@@ -69,21 +64,30 @@ const validateExistById = async(req, res, next) => {
   if(id && mongoose.Types.ObjectId.isValid(id)){ //Check by id
     book = await bookModel.find({'_id': mongoose.Types.ObjectId(id)})
   }
-  
+
   if(book.length){
     next()
   }else{
     console.log(`Book not exist`)
     res.status(409).json("Book not exist in data base")
   }
-
- 
-  //const book = await bookModel.find({"_id": _id})
-  
 }
+*/
+const validateExistBooksOfAutor = async(req,res,next) => {
+  const {autor} = req.params
+  let books = []
+  if(autor){
+  books = await bookModel.find({'autor': normalizeString(autor)})
+  }
+  if(books.length){
+    next()
+  }else{
+    console.log(`Not exists books of that autor`)
+    res.status(409).json("Not exists books of that autor")
+  }
+} 
+
 module.exports={
   validateBookData,
-  validateNotExist,
-  validateExistByIdOrName,
-  validateExistById
+  validateExistBooksOfAutor
 }

@@ -8,7 +8,7 @@ const gameSchema = new mongoose.Schema({
     trim:true
   },
   calification: {
-    type: Integer
+    type: Number
   },
   plataformLink: {
     type: String

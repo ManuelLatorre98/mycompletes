@@ -10,9 +10,9 @@ const movieSchema = new mongoose.Schema({
   calification: {
     type: Number
   },
-  plataformLink: {
+  plataformLinks: [{
     type: String
-  },
+  }],
   director: {
     type:String,
     require:true,

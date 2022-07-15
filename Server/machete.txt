@@ -1,1 +1,133 @@
 El%20camino%20de%20los%20reyes
+
+
+const mongoose = require('mongoose')
+const {normalizeString} = require('../helpers/stringFormatHelper')
+const {deleteCategoryReferencesGame} = require('../services/gameService')
+
+const fetchAllCategories = (model) => {
+  return async (from, amount) =>{ //Can recive limits for paginations
+    const categorysList = await model.find().skip(from).limit(amount)
+    return categorysList 
+  }
+}
+
+const fetchCategoryById= (model) => {
+  async (id) => {
+    let category = await model.find({'name': normalizeString(id)})
+    if(mongoose.Types.ObjectId.isValid(id) && !category.length){ //If recibe an id
+      category = await model.find({'_id': mongoose.Types.ObjectId(id)})
+    }
+    return category[0]
+  }
+}
+
+const createCategory= (model) => {
+  async (data) => {
+    const category = model(data)
+    const categorySaved = await category.save()
+    return categorySaved
+  }
+}
+
+const editCategoryData= (model) => {
+  return async (id, data) => {
+    const categoryEdited = model.findByIdAndUpdate(id, data, {new: true})
+    return categoryEdited
+  }
+}
+
+const deleteCategory= (model) => {
+  return async (id) => {
+    await model.findByIdAndDelete(mongoose.Types.ObjectId(id))
+    await deleteCategoryReferencesGame(id)
+    //LLAMA A DELETE CATEGORY  EN GAMESERVICE
+  }
+}
+  
+module.exports = {
+  fetchAllCategories,
+  fetchCategoryById,
+  createCategory,
+  editCategoryData,
+  deleteCategory
+
+}
+
+
+///////////////////////
+const {categoryClearData, categoryClearDataList,getCategoryData} = require('../helpers/dataHelper')
+const { fetchAllCategories,fetchCategoryById, createCategory, editCategoryData, deleteCategory} = require('../services/categoryService')
+
+const getAllCategories = (model) => {
+  return async (req, res, next) => {
+    try{
+      const {from, amount} = req.query
+      const CategoryList= await fetchAllCategories(from,amount)
+      const categoryListClear = categoryClearDataList(CategoryList)
+      res.status(200).json(categoryListClear)
+    }catch(err){
+      next(err)
+    }
+  }
+}
+
+const getCategoryById = (model) => {
+  return async (req,res,next) => {
+    try{
+      const {id} = req.params
+      const category = await fetchCategoryById(id)
+      const categoryClear = categoryClearData(category)
+      res.status(200).json(categoryClear)
+    }catch(err){
+      next(err)
+    }
+  }
+}
+
+const postCategory = (model) => {
+  return async (req, res, next) => {
+    try{
+      const newData = getCategoryData(req.body)
+      const newCategory = await createCategory(newData)
+      const newCategoryClear = categoryClearData(newCategory)
+      res.status(200).json(newCategoryClear)
+    }catch(err){
+      next(err)
+    }
+  }
+}
+
+const editCategory = (model) => {
+  return async (req,res,next) => {
+    try{
+      const id = req.params.id
+      const newData = getCategoryData(req.body)
+      const newCategory = await editCategoryData(id,newData)
+      const newCategoryClear= categoryClearData(newCategory)
+      res.status(200).json(newCategoryClear)
+    }catch(err){
+      next(err)
+    }
+  }
+}
+
+const removeCategory = (model) => {
+  return async (req,res,next) => {
+    try{
+      const id = req.params.id
+      await deleteCategory(id)
+      res.status(200).json("Category deleted succesfully")
+    }catch(err){
+      next(err)
+    }
+  }
+}
+
+module.exports = {
+  getAllCategories,
+  getCategoryById,
+  postCategory,
+  editCategory,
+  removeCategory
+}

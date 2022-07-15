@@ -1,0 +1,16 @@
+const express = require('express')
+const router = express.Router()
+const { validateNotExist,validateExistByIdOrName, validateExistById, }= require('../helpers/apiHelper')
+const {verifyToken} = require('../middlewares/authJwt')
+const { validateGameData, validateExistGameOfDeveloper } = require('../middlewares/validators/gameValidator')
+const gameModel = require('../models/game')
+const {getAllGames, getGameById,getGameByDeveloper,getGamesByCalification, postGame,editGame,removeGame} = require('../controllers/gameController')
+
+router.get('/developer/:developer',verifyToken,validateExistGameOfDeveloper, getGameByDeveloper)
+router.get('/calification', verifyToken, getGamesByCalification)
+router.get('/:id', verifyToken,validateExistByIdOrName('Game',gameModel), getGameById)
+router.get('/', verifyToken, getAllGames)
+router.post('/add', verifyToken,validateGameData, validateNotExist('Game',gameModel), postGame)
+router.patch('/:id', verifyToken,validateExistById('Game',gameModel), editGame)
+router.delete('/:id', verifyToken, validateExistById('Game',gameModel), removeGame)
+module.exports = router 
